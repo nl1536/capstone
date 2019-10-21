@@ -7,9 +7,11 @@ using UnityEngine;
 public static class SaveLoad {
 
     public static System.DateTime lastDateTime;
+    public static System.TimeSpan totalInGameElapsedTime;
 
     public static void Save() {
         lastDateTime = TimeKeeper.currentDateTime;
+        totalInGameElapsedTime += TimeKeeper.inGameElapsedTime;
 
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file;
@@ -22,6 +24,7 @@ public static class SaveLoad {
         }
 
         bf.Serialize(file, lastDateTime);
+        bf.Serialize(file, totalInGameElapsedTime);
         file.Close();
     }
 
@@ -30,6 +33,7 @@ public static class SaveLoad {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(Application.persistentDataPath + "/timeValues.gd", FileMode.Open);
             lastDateTime = (System.DateTime)bf.Deserialize(file);
+            totalInGameElapsedTime = (System.TimeSpan)bf.Deserialize(file);
             file.Close();
         }
     }
